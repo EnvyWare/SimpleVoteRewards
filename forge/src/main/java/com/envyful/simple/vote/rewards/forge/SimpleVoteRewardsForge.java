@@ -66,7 +66,7 @@ public class SimpleVoteRewardsForge {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartedEvent event) {
-        Sponge.getEventManager().registerListeners(Sponge.getPluginManager().getPlugin("NuVotifier"), new PlayerVoteListener(this));
+        Sponge.getEventManager().registerListeners(Sponge.getPluginManager().getPlugin("NuVotifier").get(), new PlayerVoteListener(this));
     }
 
     public static SimpleVoteRewardsForge getInstance() {
