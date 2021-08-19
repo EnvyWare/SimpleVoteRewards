@@ -1,13 +1,18 @@
 package com.envyful.simple.vote.rewards.forge;
 
+import com.envyful.api.config.yaml.YamlConfigFactory;
 import com.envyful.api.forge.command.ForgeCommandFactory;
 import com.envyful.api.forge.concurrency.ForgeUpdateBuilder;
+import com.envyful.simple.vote.rewards.forge.config.SimpleVoteRewardsConfig;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.bstats.forge.Metrics;
+import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 
 @Mod(
@@ -23,6 +28,8 @@ public class SimpleVoteRewardsForge {
     private static SimpleVoteRewardsForge instance;
 
     private ForgeCommandFactory commandFactory = new ForgeCommandFactory();
+
+    private SimpleVoteRewardsConfig config;
 
     @Mod.EventHandler
     public void onServerStarting(FMLPreInitializationEvent event) {
@@ -47,15 +54,23 @@ public class SimpleVoteRewardsForge {
     }
 
     private void loadConfig() {
-
+        try {
+            this.config = YamlConfigFactory.getInstance(SimpleVoteRewardsConfig.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Mod.EventHandler
-    public void onServerStarting(FMLServerStartingEvent event) {
+    public void onServerStarting(FMLServerStartedEvent event) {
 
     }
 
     public static SimpleVoteRewardsForge getInstance() {
         return instance;
+    }
+
+    public SimpleVoteRewardsConfig getConfig() {
+        return this.config;
     }
 }
