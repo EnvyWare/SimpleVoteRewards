@@ -3,9 +3,11 @@ package com.envyful.simple.vote.rewards.forge;
 import com.envyful.api.config.yaml.YamlConfigFactory;
 import com.envyful.api.forge.command.ForgeCommandFactory;
 import com.envyful.api.forge.concurrency.ForgeUpdateBuilder;
+import com.envyful.simple.vote.rewards.forge.command.ReloadCommand;
 import com.envyful.simple.vote.rewards.forge.config.SimpleVoteRewardsConfig;
 import com.envyful.simple.vote.rewards.forge.listener.PlayerVoteListener;
 import com.vexsoftware.votifier.sponge.NuVotifier;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
@@ -26,7 +28,7 @@ import java.nio.file.Paths;
 )
 public class SimpleVoteRewardsForge {
 
-    protected static final String VERSION = "0.1.0";
+    protected static final String VERSION = "0.2.0";
 
     private static SimpleVoteRewardsForge instance;
 
@@ -56,7 +58,7 @@ public class SimpleVoteRewardsForge {
                 .start();
     }
 
-    private void loadConfig() {
+    public void loadConfig() {
         try {
             this.config = YamlConfigFactory.getInstance(SimpleVoteRewardsConfig.class);
         } catch (IOException e) {
@@ -66,6 +68,8 @@ public class SimpleVoteRewardsForge {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartedEvent event) {
+        commandFactory.registerCommand(FMLCommonHandler.instance().getMinecraftServerInstance(), new ReloadCommand());
+
         Sponge.getEventManager().registerListeners(Sponge.getPluginManager().getPlugin("NuVotifier").get(), new PlayerVoteListener(this));
     }
 
