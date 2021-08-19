@@ -4,12 +4,15 @@ import com.envyful.api.config.yaml.YamlConfigFactory;
 import com.envyful.api.forge.command.ForgeCommandFactory;
 import com.envyful.api.forge.concurrency.ForgeUpdateBuilder;
 import com.envyful.simple.vote.rewards.forge.config.SimpleVoteRewardsConfig;
+import com.envyful.simple.vote.rewards.forge.listener.PlayerVoteListener;
+import com.vexsoftware.votifier.sponge.NuVotifier;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import org.bstats.forge.Metrics;
+import org.spongepowered.api.Sponge;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
 
 import java.io.IOException;
@@ -63,7 +66,7 @@ public class SimpleVoteRewardsForge {
 
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartedEvent event) {
-
+        Sponge.getEventManager().registerListeners(Sponge.getPluginManager().getPlugin("NuVotifier"), new PlayerVoteListener(this));
     }
 
     public static SimpleVoteRewardsForge getInstance() {

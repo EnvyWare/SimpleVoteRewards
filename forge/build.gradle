@@ -37,8 +37,10 @@ repositories {
 
 dependencies {
     minecraft 'net.minecraftforge:forge:1.12.2-14.23.5.2854'
+    compileOnly 'org.spongepowered:spongeforge:1.12.2-2838-7.1.8:dev'
 
-    compileOnly 'com.github.NuVotifier:NuVotifier:2.7.3'
+    compileOnly 'com.github.nuvotifier.nuvotifier:nuvotifier-api:2.7.2'
+    compileOnly 'com.github.nuvotifier.nuvotifier:nuvotifier-sponge:2.7.2'
 
     shadow group: 'org.spongepowered', name: 'configurate-yaml', version: '4.0.0'
 
