@@ -25,13 +25,17 @@ public class PlayerVoteListener {
             return;
         }
 
-        for (String rewardCommand : this.mod.getConfig().getRewardCommands()) {
+        voteRewards(player, this.mod);
+    }
+
+    public static void voteRewards(EntityPlayerMP player, SimpleVoteRewardsForge mod) {
+        for (String rewardCommand : mod.getConfig().getRewardCommands()) {
             UtilForgeServer.executeCommand(rewardCommand.replace("%player%", player.getName()));
         }
 
-        if (this.mod.getConfig().getLuckyVoteChance() > 0) {
-            if (ThreadLocalRandom.current().nextDouble() < this.mod.getConfig().getLuckyVoteChance()) {
-                for (String luckyVoteReward : this.mod.getConfig().getLuckyVoteRewards()) {
+        if (mod.getConfig().getLuckyVoteChance() > 0) {
+            if (ThreadLocalRandom.current().nextDouble() < mod.getConfig().getLuckyVoteChance()) {
+                for (String luckyVoteReward : mod.getConfig().getLuckyVoteRewards()) {
                     UtilForgeServer.executeCommand(luckyVoteReward.replace("%player%", player.getName()));
                 }
             }
