@@ -28,7 +28,7 @@ import java.nio.file.Paths;
 )
 public class SimpleVoteRewardsForge {
 
-    protected static final String VERSION = "0.2.0";
+    protected static final String VERSION = "0.3.0";
 
     private static SimpleVoteRewardsForge instance;
 
