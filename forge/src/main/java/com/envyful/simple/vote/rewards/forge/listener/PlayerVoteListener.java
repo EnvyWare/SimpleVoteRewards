@@ -27,7 +27,6 @@ public class PlayerVoteListener {
         }
 
         voteRewards(player, this.mod);
-
         this.mod.setVoteCounter(this.mod.getVoteCounter() + 1);
 
         if (this.mod.getVoteCounter() < this.mod.getConfig().getVotePartyRequired()) {

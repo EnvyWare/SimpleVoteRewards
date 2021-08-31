@@ -40,6 +40,5 @@ public class TestVoteCommand {
         UtilForgeConcurrency.runSync(() -> {
             PlayerVoteListener.voteRewards(player, SimpleVoteRewardsForge.getInstance());
         });
-
     }
 }
