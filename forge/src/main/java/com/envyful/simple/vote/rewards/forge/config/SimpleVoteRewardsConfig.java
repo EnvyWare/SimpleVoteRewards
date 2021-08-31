@@ -11,6 +11,7 @@ import java.util.List;
 @ConfigSerializable
 public class SimpleVoteRewardsConfig extends AbstractYamlConfig {
 
+    private int votePartyRequired = 100;
     private double luckyVotePercentage = 0.15;
 
     private List<String> luckyVoteRewards = Lists.newArrayList(
@@ -19,6 +20,14 @@ public class SimpleVoteRewardsConfig extends AbstractYamlConfig {
 
     private List<String> rewardCommands = Lists.newArrayList(
             "give %player% diamond 1"
+    );
+
+    private List<String> serverVotePartyCommands = Lists.newArrayList(
+            "broadcast HEY"
+    );
+
+    private List<String> playerVotePartyCommands = Lists.newArrayList(
+            "give %player% minecraft:diamond 1"
     );
 
     public SimpleVoteRewardsConfig() {
@@ -35,5 +44,17 @@ public class SimpleVoteRewardsConfig extends AbstractYamlConfig {
 
     public List<String> getLuckyVoteRewards() {
         return this.luckyVoteRewards;
+    }
+
+    public List<String> getServerVotePartyCommands() {
+        return this.serverVotePartyCommands;
+    }
+
+    public List<String> getPlayerVotePartyCommands() {
+        return this.playerVotePartyCommands;
+    }
+
+    public int getVotePartyRequired() {
+        return this.votePartyRequired;
     }
 }

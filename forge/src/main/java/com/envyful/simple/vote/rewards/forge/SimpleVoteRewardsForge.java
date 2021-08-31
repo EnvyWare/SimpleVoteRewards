@@ -13,6 +13,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
+import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import org.bstats.forge.Metrics;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
@@ -35,6 +36,7 @@ public class SimpleVoteRewardsForge {
     private ForgeCommandFactory commandFactory = new ForgeCommandFactory();
 
     private SimpleVoteRewardsConfig config;
+    private int voteCounter = 0;
 
     @Mod.EventHandler
     public void onServerStarting(FMLPreInitializationEvent event) {
@@ -48,19 +50,12 @@ public class SimpleVoteRewardsForge {
                 Paths.get("config/"),
                 12497
         );
-
-        ForgeUpdateBuilder.instance()
-                .name("SimpleVoteRewards")
-                .requiredPermission("simplevoterewards.update.notify")
-                .owner("Pixelmon-Development")
-                .repo("SimpleVoteRewards")
-                .version(VERSION)
-                .start();
     }
 
     public void loadConfig() {
         try {
             this.config = YamlConfigFactory.getInstance(SimpleVoteRewardsConfig.class);
+            this.voteCounter = this.config.getNode().node("voteparty.votes").getInt(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,11 +68,25 @@ public class SimpleVoteRewardsForge {
         Sponge.getEventManager().registerListeners(Sponge.getPluginManager().getPlugin("NuVotifier").get(), new PlayerVoteListener(this));
     }
 
+    @Mod.EventHandler
+    public void onServerStopping(FMLServerStoppingEvent event) {
+        this.config.getNode().node("voteparty.votes", this.voteCounter);
+        this.config.save();
+    }
+
     public static SimpleVoteRewardsForge getInstance() {
         return instance;
     }
 
     public SimpleVoteRewardsConfig getConfig() {
         return this.config;
+    }
+
+    public int getVoteCounter() {
+        return this.voteCounter;
+    }
+
+    public void setVoteCounter(int voteCounter) {
+        this.voteCounter = voteCounter;
     }
 }
