@@ -14,6 +14,10 @@ public class SimpleVoteRewardsConfig extends AbstractYamlConfig {
     private int votePartyRequired = 100;
     private double luckyVotePercentage = 0.15;
 
+    private List<String> votePartyMessage = Lists.newArrayList(
+            "&e&l(!) &e%votes%&7/&c%voteparty_total% for the next vote party!"
+    );
+
     private List<String> luckyVoteRewards = Lists.newArrayList(
             "give %player% diamond 10"
     );
@@ -32,6 +36,10 @@ public class SimpleVoteRewardsConfig extends AbstractYamlConfig {
 
     public SimpleVoteRewardsConfig() {
         super();
+    }
+
+    public List<String> getVotePartyMessage() {
+        return this.votePartyMessage;
     }
 
     public List<String> getRewardCommands() {
