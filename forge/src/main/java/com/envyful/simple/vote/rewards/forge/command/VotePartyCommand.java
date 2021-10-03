@@ -1,6 +1,7 @@
 package com.envyful.simple.vote.rewards.forge.command;
 
 import com.envyful.api.command.annotate.Command;
+import com.envyful.api.command.annotate.Permissible;
 import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Sender;
 import com.envyful.api.forge.chat.UtilChatColour;
@@ -15,6 +16,7 @@ import net.minecraft.util.text.TextComponentString;
                 "vp"
         }
 )
+@Permissible("simple.vote.rewards.command.vote.party")
 public class VotePartyCommand {
 
     @CommandProcessor
