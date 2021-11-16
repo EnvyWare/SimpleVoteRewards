@@ -2,22 +2,19 @@ package com.envyful.simple.vote.rewards.forge;
 
 import com.envyful.api.config.yaml.YamlConfigFactory;
 import com.envyful.api.forge.command.ForgeCommandFactory;
-import com.envyful.api.forge.concurrency.ForgeUpdateBuilder;
 import com.envyful.simple.vote.rewards.forge.command.ReloadCommand;
 import com.envyful.simple.vote.rewards.forge.command.VotePartyCommand;
 import com.envyful.simple.vote.rewards.forge.config.SimpleVoteRewardsConfig;
 import com.envyful.simple.vote.rewards.forge.listener.PlayerVoteListener;
-import com.vexsoftware.votifier.sponge.NuVotifier;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
-import net.minecraftforge.fml.common.event.FMLServerStartingEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
 import org.bstats.forge.Metrics;
 import org.spongepowered.api.Sponge;
-import org.spongepowered.configurate.yaml.YamlConfigurationLoader;
+import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -56,7 +53,7 @@ public class SimpleVoteRewardsForge {
     public void loadConfig() {
         try {
             this.config = YamlConfigFactory.getInstance(SimpleVoteRewardsConfig.class);
-            this.voteCounter = this.config.getNode().node("voteparty.votes").getInt(0);
+            this.voteCounter = this.config.getNode().node("voteparty", "votes").getInt(0);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,7 +70,12 @@ public class SimpleVoteRewardsForge {
 
     @Mod.EventHandler
     public void onServerStopping(FMLServerStoppingEvent event) {
-        this.config.getNode().node("voteparty.votes", this.voteCounter);
+        try {
+            this.config.getNode().node("voteparty", "votes").set(this.voteCounter);
+        } catch (SerializationException e) {
+            e.printStackTrace();
+        }
+
         this.config.save();
     }
 
