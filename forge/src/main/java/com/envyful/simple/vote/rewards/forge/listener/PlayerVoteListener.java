@@ -27,23 +27,6 @@ public class PlayerVoteListener {
         }
 
         voteRewards(player, this.mod);
-        this.mod.setVoteCounter(this.mod.getVoteCounter() + 1);
-
-        if (this.mod.getVoteCounter() < this.mod.getConfig().getVotePartyRequired()) {
-            return;
-        }
-
-        this.mod.setVoteCounter(0);
-
-        for (EntityPlayerMP entityPlayerMP : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
-            for (String playerVotePartyCommand : this.mod.getConfig().getPlayerVotePartyCommands()) {
-                UtilForgeServer.executeCommand(playerVotePartyCommand.replace("%player%", entityPlayerMP.getName()));
-            }
-        }
-
-        for (String serverVotePartyCommand : this.mod.getConfig().getServerVotePartyCommands()) {
-            UtilForgeServer.executeCommand(serverVotePartyCommand);
-        }
     }
 
     public static void voteRewards(EntityPlayerMP player, SimpleVoteRewardsForge mod) {
@@ -57,6 +40,24 @@ public class PlayerVoteListener {
                     UtilForgeServer.executeCommand(luckyVoteReward.replace("%player%", player.getName()));
                 }
             }
+        }
+
+        SimpleVoteRewardsForge.getInstance().setVoteCounter(SimpleVoteRewardsForge.getInstance().getVoteCounter() + 1);
+
+        if (SimpleVoteRewardsForge.getInstance().getVoteCounter() < SimpleVoteRewardsForge.getInstance().getConfig().getVotePartyRequired()) {
+            return;
+        }
+
+        SimpleVoteRewardsForge.getInstance().setVoteCounter(0);
+
+        for (EntityPlayerMP entityPlayerMP : FMLCommonHandler.instance().getMinecraftServerInstance().getPlayerList().getPlayers()) {
+            for (String playerVotePartyCommand : SimpleVoteRewardsForge.getInstance().getConfig().getPlayerVotePartyCommands()) {
+                UtilForgeServer.executeCommand(playerVotePartyCommand.replace("%player%", entityPlayerMP.getName()));
+            }
+        }
+
+        for (String serverVotePartyCommand : SimpleVoteRewardsForge.getInstance().getConfig().getServerVotePartyCommands()) {
+            UtilForgeServer.executeCommand(serverVotePartyCommand);
         }
     }
 }
