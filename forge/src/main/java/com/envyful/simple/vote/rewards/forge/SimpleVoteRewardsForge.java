@@ -30,7 +30,7 @@ import java.util.Objects;
 )
 public class SimpleVoteRewardsForge {
 
-    protected static final String VERSION = "0.7.0";
+    protected static final String VERSION = "0.7.1";
 
     private static SimpleVoteRewardsForge instance;
 
