@@ -6,7 +6,6 @@ import com.envyful.api.command.annotate.executor.CommandProcessor;
 import com.envyful.api.command.annotate.executor.Sender;
 import com.envyful.api.forge.concurrency.UtilForgeConcurrency;
 import com.envyful.api.forge.player.util.UtilPlayer;
-import com.envyful.api.forge.server.UtilForgeServer;
 import com.envyful.simple.vote.rewards.forge.SimpleVoteRewardsForge;
 import com.envyful.simple.vote.rewards.forge.listener.PlayerVoteListener;
 import net.minecraft.command.ICommandSender;
@@ -38,7 +37,7 @@ public class TestVoteCommand {
         }
 
         UtilForgeConcurrency.runSync(() -> {
-            PlayerVoteListener.voteRewards(player, SimpleVoteRewardsForge.getInstance());
+            PlayerVoteListener.voteRewards(player, SimpleVoteRewardsForge.getInstance(), "test");
         });
     }
 }

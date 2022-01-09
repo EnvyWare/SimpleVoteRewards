@@ -2,10 +2,12 @@ package com.envyful.simple.vote.rewards.forge.config;
 
 import com.envyful.api.config.data.ConfigPath;
 import com.envyful.api.config.yaml.AbstractYamlConfig;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import org.spongepowered.configurate.objectmapping.ConfigSerializable;
 
 import java.util.List;
+import java.util.Map;
 
 @ConfigPath("config/SimpleVoteRewards/config.yml")
 @ConfigSerializable
@@ -34,6 +36,10 @@ public class SimpleVoteRewardsConfig extends AbstractYamlConfig {
             "give %player% minecraft:diamond 1"
     );
 
+    private Map<String, List<String>> serviceSpecificRewards = ImmutableMap.of(
+            "minecraftserverlist", Lists.newArrayList("broadcast hello %service%")
+    );
+
     public SimpleVoteRewardsConfig() {
         super();
     }
@@ -42,7 +48,11 @@ public class SimpleVoteRewardsConfig extends AbstractYamlConfig {
         return this.votePartyMessage;
     }
 
-    public List<String> getRewardCommands() {
+    public List<String> getRewardCommands(String serviceName) {
+        if (this.serviceSpecificRewards.containsKey(serviceName.toLowerCase())) {
+            return this.serviceSpecificRewards.get(serviceName.toLowerCase());
+        }
+
         return this.rewardCommands;
     }
 

@@ -1,23 +1,26 @@
 package com.envyful.simple.vote.rewards.forge;
 
+import com.envyful.api.config.util.UtilConfig;
 import com.envyful.api.config.yaml.YamlConfigFactory;
 import com.envyful.api.forge.command.ForgeCommandFactory;
 import com.envyful.simple.vote.rewards.forge.command.ReloadCommand;
 import com.envyful.simple.vote.rewards.forge.command.VotePartyCommand;
 import com.envyful.simple.vote.rewards.forge.config.SimpleVoteRewardsConfig;
+import com.envyful.simple.vote.rewards.forge.config.VoteCache;
 import com.envyful.simple.vote.rewards.forge.listener.PlayerVoteListener;
+import com.google.common.collect.Lists;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
 import net.minecraftforge.fml.common.event.FMLServerStartedEvent;
 import net.minecraftforge.fml.common.event.FMLServerStoppingEvent;
-import org.bstats.forge.Metrics;
 import org.spongepowered.api.Sponge;
 import org.spongepowered.configurate.serialize.SerializationException;
 
 import java.io.IOException;
-import java.nio.file.Paths;
+import java.util.List;
+import java.util.Objects;
 
 @Mod(
         modid = "simplevoterewards",
@@ -35,25 +38,26 @@ public class SimpleVoteRewardsForge {
 
     private SimpleVoteRewardsConfig config;
     private int voteCounter = 0;
+    private List<VoteCache> cachedVotes = Lists.newArrayList();
 
     @Mod.EventHandler
     public void onServerStarting(FMLPreInitializationEvent event) {
         instance = this;
 
         this.loadConfig();
-
-        Metrics metrics = new Metrics(
-                Loader.instance().activeModContainer(),
-                event.getModLog(),
-                Paths.get("config/"),
-                12497
-        );
     }
 
     public void loadConfig() {
         try {
             this.config = YamlConfigFactory.getInstance(SimpleVoteRewardsConfig.class);
             this.voteCounter = this.config.getNode().node("voteparty", "votes").getInt(0);
+            List<VoteCache> voteCache = Lists.newArrayList();
+
+            for (String s : UtilConfig.getList(this.config.getNode(), String.class, "vote", "cache")) {
+                voteCache.add(VoteCache.deserialize(s));
+            }
+
+            this.cachedVotes = voteCache;
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -62,8 +66,10 @@ public class SimpleVoteRewardsForge {
     @Mod.EventHandler
     public void onServerStarting(FMLServerStartedEvent event) {
         this.commandFactory.registerCommand(FMLCommonHandler.instance().getMinecraftServerInstance(), new ReloadCommand());
-        this.commandFactory.registerCommand(FMLCommonHandler.instance().getMinecraftServerInstance(),
-                                            new VotePartyCommand());
+        this.commandFactory.registerCommand(
+                FMLCommonHandler.instance().getMinecraftServerInstance(),
+                new VotePartyCommand()
+        );
 
         Sponge.getEventManager().registerListeners(Sponge.getPluginManager().getPlugin("NuVotifier").get(), new PlayerVoteListener(this));
     }
@@ -72,6 +78,11 @@ public class SimpleVoteRewardsForge {
     public void onServerStopping(FMLServerStoppingEvent event) {
         try {
             this.config.getNode().node("voteparty", "votes").set(this.voteCounter);
+            List<String> cachedVotes = Lists.newArrayList();
+            for (VoteCache cachedVote : this.cachedVotes) {
+                cachedVotes.add(cachedVote.serialize());
+            }
+            this.config.getNode().node("vote", "cache").set(cachedVotes);
         } catch (SerializationException e) {
             e.printStackTrace();
         }
@@ -93,5 +104,29 @@ public class SimpleVoteRewardsForge {
 
     public void setVoteCounter(int voteCounter) {
         this.voteCounter = voteCounter;
+    }
+
+    public List<VoteCache> getCachedVotes(EntityPlayerMP player) {
+        List<VoteCache> voteCache = Lists.newArrayList();
+
+        for (VoteCache cachedVote : this.cachedVotes) {
+            if (Objects.equals(cachedVote.getUsername(), player.getName())) {
+                voteCache.add(cachedVote);
+            }
+        }
+
+        return voteCache;
+    }
+
+    public static List<VoteCache> getCache(EntityPlayerMP player) {
+        return SimpleVoteRewardsForge.getInstance().getCachedVotes(player);
+    }
+
+    public static void addCache(String name, String service) {
+        SimpleVoteRewardsForge.getInstance().cachedVotes.add(new VoteCache(name, service));
+    }
+
+    public static void removeCachedVotes(List<VoteCache> voteCaches) {
+        SimpleVoteRewardsForge.getInstance().cachedVotes.removeAll(voteCaches);
     }
 }
